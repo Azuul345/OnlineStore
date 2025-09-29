@@ -19,7 +19,7 @@ namespace OnlineStore
         private string _type;
 
         public string Name { get; set; }
-        public int Price { get;  set; }
+        public double Price { get;  set; }
         public int ProductID { get;  private set; }
         public string Type { get;  set; }
 
@@ -38,11 +38,11 @@ namespace OnlineStore
 
         
 
-        public virtual double FinalPrice()
-        {
-            double discountFactor = 1 - GlobalDiscount;
-            return Price * discountFactor;
-        }
+        //public virtual double FinalPrice()
+        //{
+        //    double discountFactor = 1 - GlobalDiscount;
+        //    return Price * discountFactor;
+        //}
 
         
 

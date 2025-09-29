@@ -31,10 +31,11 @@
             // 9. I klassen Kund skall det finnasen ToString() som skriver ut Namn, lösenord och kundvagnen på ett snyggt sätt.
 
 
-
-
-            while (true)
+            bool logginIn = true;
+            Customer c = new Customer();
+            while (logginIn)
             {
+               
 
                 Console.WriteLine("Welcome, what would you like to do?");
                 Console.WriteLine("(1): Loggin");
@@ -42,90 +43,89 @@
                 int choice = StoreMechanics.ValueCheckInt("Enter Number: ");
                 if (choice == 1)
                 {                   
-                    Customer.LogIn();
+                    c = Customer.LogIn();
+                    logginIn = false;
+                    
                 }
                 else if (choice == 2)
                 {
-                    Customer c = Customer.RegisterCustumer();
-                    StoreMechanics.EnterShop(c);
+                    c = Customer.RegisterCustumer();
+                    logginIn = false;
+                    //StoreMechanics.EnterShop(c);
+
                 }
                 else
                 {
                     Console.WriteLine("Try again");
                 }
-
             }
 
-            //Console.WriteLine("Welcome, what would you like to do?");
-            //Console.WriteLine("(1): Loggin");
-            //Console.WriteLine("(2): Register");
-            //int choice = StoreMechanics.ValueCheckInt("Enter Number: ");
-            //if (choice == 1)
-            //{
-            //    //login
 
-            //    //StoreMechanics.EnterShop(HERE);
-            //}
-            //else if (choice == 2)
-            //{
-            //    Customer c = Customer.RegisterCustumer();
-            //    StoreMechanics.EnterShop(c);
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Try again");
-            //}
+            bool inStore = true;
+                bool paid = false;
+                while (inStore)
+                {
+                    Console.Clear();
 
-                //StoreMechanics.LogInOrRegister();
+                    int storeChoice = StoreMechanics.ValueCheckInt("What would you like to do? " +
+                        "\n(1): Shop item " +
+                        "\n(2): Show Shopping Cart Item Details " +
+                        "\n(3): Check Out " +
+                        "\n(4)Admin: see all cusomer info");
 
+                    switch (storeChoice)
+                    {
+                        case 1:
 
+                            StoreMechanics.ShowCaseInventory();
+                            StoreMechanics.SelectToCart(c.Cart);
 
-            //List<Product> ShoppingCart = new List<Product>();
-            //bool inStore = true;
+                            break;
+                        case 2:
 
-            //while (inStore)
-            //{
-            //    Console.Clear();
+                            StoreMechanics.ShowcaseCart(c.Cart);
+                            break;
 
-            //    int storeChoice = StoreMechanics.ValueCheckInt("What would you like to do? " +
-            //        "\n(1): Shop item " +
-            //        "\n(2): Show Shopping Cart Item Details ");
-
-            //    switch (storeChoice)
-            //    {
-            //        case 1:
-
-            //            StoreMechanics.ShowCaseInventory();
-            //            StoreMechanics.SelectToCart(ShoppingCart);
-                        
-            //            break;
-            //        case 2:
-                        
-            //            StoreMechanics.ShowCaseCart(ShoppingCart);
-            //            break;
-
-            //        case 3:
-            //            break;
-
-
-            //    }
-            //    Console.ReadKey();
-                
-            //        //StoreMechanics.AddItem(ShoppingCart);
-
-            //}
-
-
-            //if (login)
+                        case 3:
+                            
+                            if (c.MemberType != "Regular")
+                            {
+                                Member m = Member.ConvertToMember(c, c.Cart);
+                                double finalPrice = Member.GetFinalPrice(m.Cart);
+                                paid = StoreMechanics.CheckedOut(finalPrice);
+                                if (paid)
+                                {
+                                    c.Cart.Clear();
+                                    logginIn = true;
+                                    inStore = false;
+                                    paid = false;                                                                        
+                                }
+                            }
+                            else
+                            {
+                                double finalPrice = StoreMechanics.ShowcaseCart(c.Cart);
+                                 paid = StoreMechanics.CheckedOut(finalPrice);
+                                if (paid)
+                                {
+                                    c.Cart.Clear();
+                                    logginIn = true;
+                                    inStore = false;
+                                    paid = false;
+                                    
+                                }
+                            }
+                            break;
+                        case 4:
+                            Customer.ListAllCustumers();
+                            break;
 
 
-            //else (register
+                    }
+                    Console.ReadKey();
 
+                }
 
-
-
-
-
+            
                 Console.ReadKey();
         }
     }

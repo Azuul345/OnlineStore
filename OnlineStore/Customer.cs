@@ -25,11 +25,11 @@ namespace OnlineStore
 
         public string Name { get; private set; }
         public string Password { get; private set; }
-        public  string MemberType { get; private set; }
+        public string MemberType { get; private set; }
 
         public List<Product> Cart { get; set; }
 
-        public Customer(string name ,string password, string membertype) //
+        public Customer(string name = "nn" ,string password = "", string membertype = "") //
         {
             Name = name;
             Password = password;
@@ -38,20 +38,22 @@ namespace OnlineStore
         }
 
 
-        public static void LogIn()
+        public static Customer LogIn()
         {
             Console.Write("Enter your name: ");
             string name = Console.ReadLine();
             Console.Write("Enter password: ");
             string passWord = Console.ReadLine();
 
-            foreach(Customer c in Customers)
+            foreach (Customer c in Customers)
             {
-                if(c.Name == name && c.Password == passWord)
+                if (c.Name == name && c.Password == passWord)
                 {
-                    StoreMechanics.EnterShop(c);
+                    return c;
                 }
             }
+            Console.WriteLine("Unable to log in");
+            return null;
         }
 
         public static Customer RegisterCustumer()
@@ -89,29 +91,6 @@ namespace OnlineStore
 
         }
 
-        //public double GetMemberDiscount()
-        //{
-        //    double procentInDiscount = 0;
-
-        //    string memberType = MemberType;
-        //    switch (memberType)
-        //    {
-        //        case "GOLD":
-        //            procentInDiscount = 0.15;
-        //            break;
-        //        case "SILVER":
-        //            procentInDiscount = 0.1;
-        //            break;
-        //        case "BRONZ":
-        //            procentInDiscount = 0.5;
-        //            break;
-        //        default:
-        //            procentInDiscount = 0;
-        //            break;
-
-        //    }
-        //    return procentInDiscount;
-        //}
 
 
         public static void ListAllCustumers()
