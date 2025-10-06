@@ -11,7 +11,8 @@ namespace OnlineStore
 {
     internal class StoreMechanics
     {
-        
+        public static Product.CurrencyValue chosenCurrency = Product.CurrencyValue.SEK;
+
         private static List<Product> Inventory = new List<Product>()
         {
          new FruitAndVegetable(){ Name = "Apple", Price = 8, Type = "Fruit", Country = "Sweden", },
@@ -24,7 +25,7 @@ namespace OnlineStore
             Console.WriteLine("=== MENU ====");
             foreach(Product product in Inventory)
             {
-                Console.WriteLine(product.ProductInfo());
+                Console.WriteLine(product.ProductInfo(product.Currency)); //doublecheck
             }
         } 
 
@@ -50,117 +51,46 @@ namespace OnlineStore
             }
         }
 
+
+        public static void Changecurrency()
+        {
+            int choice = ValueCheckInt("Would you like to change Currency to: \n(1): US \n(2): EUR \n(3): SEK");
+            switch (choice)
+            {
+                case 1:
+                    chosenCurrency = Product.CurrencyValue.USD;
+                    break;
+                case 2:
+                    chosenCurrency = Product.CurrencyValue.EUR;
+                    break;
+                case 3:
+                    chosenCurrency = Product.CurrencyValue.SEK;
+                    break;
+
+            }
+            Console.WriteLine($"Currency value is now {chosenCurrency}");
+        }
+
         public static double  ShowcaseCart(List<Product> cart)
         {   int totalItems = 0;
             double totalSum = 0;
             foreach(Product product in cart)
             {
-                Console.WriteLine(product.ProductInfo());
-                totalSum += product.Price;
+                Console.WriteLine(product.ProductInfo(product.Currency));//doublecheck
+                totalSum += Product.PriceInCurrency(chosenCurrency, product.Price);
                 totalItems++;
             }
-            Console.WriteLine($"Total sum: {totalSum} kr. Total items: {totalItems}");
+            Console.WriteLine($"Total cost: {totalSum} {Product.CurrencySymbol(chosenCurrency)}. Total items: {totalItems}");
             return totalSum;
          
         }
 
-        //public static void ResetCart(List<Product> cart)
-        //{
-        //    foreach (Product p in cart)
-        //    {
-        //        cart.Clear();
-        //    }
+        public static void ResetCart(List<Product> cart)
+        {
+            cart.Clear();
 
-        //}
+        }
 
-
-
-        //public static void CheckOut(Customer c, List<Product> cart)
-        //{
-
-        //    double discountValue = Member.GetMemberDiscount(c.MemberType);
-        //    List<string> seen = [];
-        //    Console.WriteLine("=== Check out ===");
-        //    for (int i = 0; i < cart.Count; i++)
-        //    {
-        //        string currentItem = cart[i].Name; //not sure
-        //        if (seen.Contains(currentItem))
-        //        {
-        //            continue;
-        //        }
-        //        int count = 1;
-
-        //        for(int j = (i + 1);j < cart.Count; j++)
-        //        {
-        //            if(cart[j].Name == currentItem)
-        //            {
-        //                count++;
-        //            }
-        //        }
-        //        Console.WriteLine($"{count}x - {currentItem} ");
-        //        seen.Add(currentItem);
-        //    }
-
-
-        //Console.WriteLine($"Discount applied {discountValue}");
-        //}
-
-        //CYC4D53MM7Y34Y
-
-
-
-        //public static void EnterShop(Customer c)
-        //{
-        //bool inStore = true;
-
-        //while (inStore)
-        //{
-        //    Console.Clear();
-
-        //    int storeChoice = StoreMechanics.ValueCheckInt("What would you like to do? " +
-        //        "\n(1): Shop item " +
-        //        "\n(2): Show Shopping Cart Item Details " +
-        //        "\n(3): Check Out " +
-        //        "\n(4)Admin: see all cusomer info");
-
-        //    switch (storeChoice)
-        //    {
-        //        case 1:
-
-        //            StoreMechanics.ShowCaseInventory();
-        //            StoreMechanics.SelectToCart(c.Cart);
-
-        //            break;
-        //        case 2:
-
-        //            StoreMechanics.ShowcaseCart(c.Cart);
-        //            break;
-
-        //        case 3:
-        //            Member m = Member.ConvertToMember(c, c.Cart);
-        //            if (c.MemberType != "Regular")
-        //            {
-        //                double finalPrice = Member.GetFinalPrice(m.Cart);
-        //                CheckOut(finalPrice);
-        //            }
-        //            else
-        //            {
-        //                double finalPrice = StoreMechanics.ShowcaseCart(c.Cart);
-        //                CheckOut(finalPrice);                            
-        //            }              
-        //            break;
-        //        case 4:
-        //            Customer.ListAllCustumers();
-        //            break;
-
-
-        //    }
-        //    Console.ReadKey();
-
-
-
-        //}
-        //}
 
         public static bool CheckedOut(double finalPrice)
         {
@@ -178,6 +108,11 @@ namespace OnlineStore
 
         }
 
+        public static void PressEnterToContinue()
+        {
+            Console.WriteLine("Press enter to continue");
+            Console.ReadKey();
+        }
 
         public static double CheckForCorrectValue(string enterValue)
         {

@@ -8,7 +8,7 @@ namespace OnlineStore
 {
     public abstract class Product
     {
-        //public static double GlobalDiscount = 0.0;
+        
         public static int TotalCount = 0;
         public static int nextProductID = 1;
 
@@ -23,6 +23,9 @@ namespace OnlineStore
         public int ProductID { get;  private set; }
         public string Type { get;  set; }
 
+        public enum CurrencyValue {SEK, USD, EUR }
+        public CurrencyValue Currency { get; private set; }
+
         public Product()
         {
             ProductID = nextProductID;
@@ -30,19 +33,51 @@ namespace OnlineStore
             TotalCount++;
         }
 
-        public virtual string ProductInfo()
+        public static double ConvertFromSek(CurrencyValue c)
         {
-            return $"{Name}. \nPrice: {Price} \nType: {Type} ID: {ProductID}";
+            if (c == CurrencyValue.USD)
+            {
+                return 0.09;
+            }
+            if(c == CurrencyValue.EUR)
+            {
+                return 0.085;
+            }
+            return 1;
+        }
+
+        public static string CurrencySymbol(CurrencyValue c)
+        {
+            if(c == CurrencyValue.USD)
+            {
+                return "$";
+            }
+            if (c == CurrencyValue.EUR)
+            {
+                return "€";
+            }
+            return "kr";
+        }
+
+        public static double PriceInCurrency(CurrencyValue c, double price)
+        {
+            double rate = ConvertFromSek(c);
+            return Math.Round(price * rate, 2);
+        }
+
+
+        
+        public virtual string ProductInfo(CurrencyValue c)
+        {
+            double price = PriceInCurrency(c, Price);
+            string sym = CurrencySymbol(c);
+            return $"{Name}. \nPrice: {price}{sym} \nType: {Type} \nID: {ProductID}";
         }
 
 
         
 
-        //public virtual double FinalPrice()
-        //{
-        //    double discountFactor = 1 - GlobalDiscount;
-        //    return Price * discountFactor;
-        //}
+        
 
         
 

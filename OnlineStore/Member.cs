@@ -44,7 +44,7 @@ namespace OnlineStore
                 sum += product.Price;
                 totalItems++;
             }
-            Console.WriteLine($"The total purchase sum of {totalItems} items: {sum} kr");
+            Console.WriteLine($"The total purchase cost of {totalItems} items: {sum} kr");
             
             double newPrice = sum * (1 - GetMemberDiscount(MemberType));
                        

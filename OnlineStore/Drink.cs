@@ -12,9 +12,11 @@ namespace OnlineStore
 
         
 
-        public override string ProductInfo()
+        public override string ProductInfo(CurrencyValue c)
         {
-            return $"{Name} -  Price: {Price} Size: {Size} Type: {Type}  "; //Product ID: {ProductID}
+            double price = PriceInCurrency(c, Price);
+            string sym = CurrencySymbol(c);
+            return $"{Name}. Price: {price} {sym} Type: {Type} "; //Product ID: {ProductID}
         }
     }
 }

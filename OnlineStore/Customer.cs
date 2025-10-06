@@ -38,23 +38,50 @@ namespace OnlineStore
         }
 
 
+        
+
         public static Customer LogIn()
         {
+            
             Console.Write("Enter your name: ");
             string name = Console.ReadLine();
             Console.Write("Enter password: ");
-            string passWord = Console.ReadLine();
+            string password = Console.ReadLine();
 
-            foreach (Customer c in Customers)
+            Customer found = null;
+
+            for(int i = 0; i < Customers.Count; i++)
             {
-                if (c.Name == name && c.Password == passWord)
+                if(Customers[i].Name == name)
                 {
-                    return c;
+                    found = Customers[i];
+                    break;
                 }
             }
-            Console.WriteLine("Unable to log in");
-            return null;
+            if (found == null)
+            {
+                Console.WriteLine("Customer not found. \nPress (1) to register \nPress any button to contine");
+                string input = Console.ReadLine();
+                if (input == "1")
+                {
+                    RegisterCustumer();
+                    Console.WriteLine("Register, Please log in");
+                }
+                //StoreMechanics.PressEnterToContinue();
+                return null;
+            }      
+            if(found.Password != password)
+            {
+                Console.WriteLine("Wrong password");
+                StoreMechanics.PressEnterToContinue() ;
+                return null;
+            }
+            Console.WriteLine($"Welcome {found.Name}");
+            StoreMechanics.PressEnterToContinue();
+            return found;              
         }
+
+        
 
         public static Customer RegisterCustumer()
         {
@@ -87,6 +114,7 @@ namespace OnlineStore
             }
             Customer c = new Customer(name,password,memberType);
             Customers.Add(c);
+            Console.WriteLine("Registration Complete");
             return c;
 
         }
@@ -100,11 +128,31 @@ namespace OnlineStore
                 Console.WriteLine($"{c.Name} Member type: {c.MemberType} " ); //Member type: {c.MemberType}
                 foreach (Product p in c.Cart)
                 {
-                    Console.WriteLine(p.ProductInfo());
+                    Console.WriteLine(p.ProductInfo(StoreMechanics.chosenCurrency));
                 }
             }
         }
+        //add currency later
+        public override string ToString()
+        {
+            string cartProduct = "";
+            double total = 0;
+            int count = 0;
 
+            foreach(Product p in Cart)
+            {
+                cartProduct += p.ProductInfo(p.Currency) + "\n";
+                total += p.Price;
+                count++;
+            }
+            //string symbol = Product.CurrencySymbol(
+            return $"===Customer info===" +
+                   $"\nName: {Name} Password: {Password} " +
+                   $"\nShopping Cart items: " +
+                   cartProduct +
+                   $"Total cost: {total}. Total items {count}";
+           
+        }
 
     }
 }
