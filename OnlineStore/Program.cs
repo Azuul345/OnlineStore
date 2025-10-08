@@ -1,4 +1,6 @@
-﻿namespace OnlineStore
+﻿using System.Text;
+
+namespace OnlineStore
 {
     internal class Program
     {
@@ -40,6 +42,10 @@
             //Fix the currency converter to show properly in all menu options and when checking out. 
 
             //Add textfile to save customers. 
+            Console.OutputEncoding = Encoding.UTF8;
+            string path = "customer.txt";
+            //List<Customer> allCustomers = new();
+            List<Customer> allCustomers = StoreMechanics.LoadCustomerFromTextFile(path);
 
             bool programRunning = true;
             while (programRunning)
@@ -49,15 +55,15 @@
                 Customer c = new Customer();
                 while (logginIn)
                 {
-               
-
+                
                     Console.WriteLine("Welcome, what would you like to do?");
                     Console.WriteLine("(1): Loggin");
                     Console.WriteLine("(2): Register");
+
                     int choice = StoreMechanics.ValueCheckInt("Enter Number: ");
                     if (choice == 1)
                     {
-                        c = Customer.LogIn();
+                        c = Customer.LogIn(allCustomers);
                         if(c != null)
                         {
                             logginIn = false;
@@ -65,7 +71,7 @@
                     }
                     else if (choice == 2)
                     {
-                        c = Customer.RegisterCustumer();
+                        c = Customer.RegisterCustumer(allCustomers);
                         logginIn = false;
                     //StoreMechanics.EnterShop(c);
 
@@ -111,7 +117,7 @@
                             if (c.MemberType != "Regular")
                             {
                                 Member m = Member.ConvertToMember(c, c.Cart);
-                                double price = Member.GetFinalPrice(m.Cart);
+                                double price = Member.GetFinalPrice(m.Cart, m.MemberType);
                                 double finalPrice = Product.PriceInCurrency(StoreMechanics.chosenCurrency, price);
                                 paid = StoreMechanics.CheckedOut(price);
                                 if (paid)
@@ -139,6 +145,7 @@
                             StoreMechanics.ResetCart(c.Cart);
                             break;
                         case 5:
+                            StoreMechanics.SaveCustomerToTextFile(allCustomers, path);
                             c = null;
                             inStore = false;
                             logginIn = true;
@@ -148,19 +155,15 @@
                             
                             break;
                         case 7:
-                            StoreMechanics.Changecurrency();
+                            StoreMechanics.ChangeCurrency();
                             break;
                         case 8:
-                            Customer.ListAllCustumers();
+                            Customer.ListAllCustumers(allCustomers);
                             break;
                     }
                     StoreMechanics.PressEnterToContinue();
                 }
             }
-
-
-
-
             
             
             Console.ReadKey();

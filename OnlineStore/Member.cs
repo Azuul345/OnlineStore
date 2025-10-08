@@ -9,14 +9,16 @@ namespace OnlineStore
 {
     internal class Member : Customer
     {
-        public static string MemberType;
-        public int procentDiscount;
+        //private string _typeOfMember;
+        //public string TypeOfMember { get { return _typeOfMember; }  private set { value = _typeOfMember; } }
+        public string MemberType { get; private set; }
+        //public int procentDiscount;
 
 
         public Member(string name, string password, string membertype) : base(name, password, membertype)
         {
             MemberType = membertype;
-            
+
         }
 
 
@@ -33,23 +35,26 @@ namespace OnlineStore
             return null;
         }
 
-        public static double GetFinalPrice(List<Product> cart)
+        public static double GetFinalPrice(List<Product> cart, string memberType)
         {
+            string currencySymbol = Product.CurrencySymbol(StoreMechanics.chosenCurrency);
             double sum = 0;
             int totalItems = 0;
 
             foreach (Product product in cart)
             {
-                Console.WriteLine($"{product.Name} Price:{product.Price} ");
-                sum += product.Price;
+                Console.WriteLine($"{product.Name} - Price: {Product.PriceInCurrency(StoreMechanics.chosenCurrency, product.Price)} ");  // Product.PriceInCurrency(StoreMechanics.chosenCurrency, p.Price)   product.Price
+                sum += Product.PriceInCurrency(StoreMechanics.chosenCurrency, product.Price); //Product.PriceInCurrency(StoreMechanics.chosenCurrency, p.Price)
                 totalItems++;
             }
-            Console.WriteLine($"The total purchase cost of {totalItems} items: {sum} kr");
+            Console.WriteLine($"The total purchase cost of {totalItems} items: {sum} {currencySymbol}"); 
             
-            double newPrice = sum * (1 - GetMemberDiscount(MemberType));
-                       
-            Console.WriteLine($"With your {MemberType} Membership you get a discount of {GetMemberDiscount(MemberType)} price to {newPrice}");
-            
+            double newPrice = sum * (1 - GetMemberDiscount(memberType));
+
+            Console.WriteLine($"With your {memberType} Membership you get a discount of {GetMemberDiscount(memberType)} price to {newPrice}" +
+                $" {currencySymbol}"); 
+
+
             return newPrice;
 
         }

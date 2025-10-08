@@ -10,12 +10,12 @@ namespace OnlineStore
 {
     internal class Customer
     {
-        private static List<Customer> Customers = new List<Customer>()
-        {
-            new Customer("Knatte", "123", "GOLD" ),
-            new Customer("Fnatte", "321", "SILVER"),
-            new Customer("Tjatte", "213", "BRONZ")
-        };
+        //public static List<Customer> Customers = new List<Customer>()
+        //{
+        //    new Customer("Knatte", "123", "GOLD" ),
+        //    new Customer("Fnatte", "321", "SILVER"),
+        //    new Customer("Tjatte", "213", "BRONZ")
+        //};
 
 
         private string _name;
@@ -39,8 +39,8 @@ namespace OnlineStore
 
 
         
-
-        public static Customer LogIn()
+        //FixLog in to read from text file
+        public static Customer LogIn(List<Customer> custumer)
         {
             
             Console.Write("Enter your name: ");
@@ -50,11 +50,11 @@ namespace OnlineStore
 
             Customer found = null;
 
-            for(int i = 0; i < Customers.Count; i++)
+            for(int i = 0; i < custumer.Count; i++)
             {
-                if(Customers[i].Name == name)
+                if(custumer[i].Name == name)
                 {
-                    found = Customers[i];
+                    found = custumer[i];
                     break;
                 }
             }
@@ -64,7 +64,7 @@ namespace OnlineStore
                 string input = Console.ReadLine();
                 if (input == "1")
                 {
-                    RegisterCustumer();
+                    RegisterCustumer(custumer);
                     Console.WriteLine("Register, Please log in");
                 }
                 //StoreMechanics.PressEnterToContinue();
@@ -83,7 +83,7 @@ namespace OnlineStore
 
         
 
-        public static Customer RegisterCustumer()
+        public static Customer RegisterCustumer(List<Customer> customer)
         {
             string memberType;
 
@@ -113,7 +113,7 @@ namespace OnlineStore
 
             }
             Customer c = new Customer(name,password,memberType);
-            Customers.Add(c);
+            customer.Add(c);
             Console.WriteLine("Registration Complete");
             return c;
 
@@ -121,9 +121,9 @@ namespace OnlineStore
 
 
 
-        public static void ListAllCustumers()
+        public static void ListAllCustumers(List<Customer> customer)
         {
-            foreach (Customer c in Customers)
+            foreach (Customer c in customer)
             {
                 Console.WriteLine($"{c.Name} Member type: {c.MemberType} " ); //Member type: {c.MemberType}
                 foreach (Product p in c.Cart)
@@ -135,22 +135,23 @@ namespace OnlineStore
         //add currency later
         public override string ToString()
         {
+            string currencySymbol = Product.CurrencySymbol(StoreMechanics.chosenCurrency);
             string cartProduct = "";
             double total = 0;
             int count = 0;
 
             foreach(Product p in Cart)
             {
-                cartProduct += p.ProductInfo(p.Currency) + "\n";
-                total += p.Price;
+                cartProduct += p.ProductInfo(StoreMechanics.chosenCurrency) + "\n";
+                total += Product.PriceInCurrency(StoreMechanics.chosenCurrency, p.Price); //p.Price
                 count++;
             }
             //string symbol = Product.CurrencySymbol(
             return $"===Customer info===" +
                    $"\nName: {Name} Password: {Password} " +
-                   $"\nShopping Cart items: " +
+                   $"\nShopping Cart items:\n" +
                    cartProduct +
-                   $"Total cost: {total}. Total items {count}";
+                   $"Total cost: {total} {currencySymbol}. Total items {count}";
            
         }
 

@@ -71,7 +71,7 @@ namespace OnlineStore
         {
             double price = PriceInCurrency(c, Price);
             string sym = CurrencySymbol(c);
-            return $"{Name}. \nPrice: {price}{sym} \nType: {Type} \nID: {ProductID}";
+            return $"\n{Name}. \nPrice: {price}{sym} \nType: {Type} \nID: {ProductID}";
         }
 
 

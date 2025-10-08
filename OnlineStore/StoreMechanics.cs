@@ -19,23 +19,84 @@ namespace OnlineStore
          new Drink(){Name = "Coca Cola", Size="M", Price = 20, Type = "Drink", },
          new Meal(){Name = "Hot Dog", Price = 15, MealType = "Snack" ,Type = "Food",}
         };
-            
+
+
+        public static List<Customer> LoadCustomerFromTextFile(string path)
+        {
+            const char sep = '|';
+            List<Customer> result = new();
+            if (!File.Exists(path)) return null;
+            using StreamReader sr = new StreamReader(path);
+
+
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                if (line.Length == 0 || line[0] == '#') continue;
+
+                string[] part = line.Split(sep);
+                if(part.Length < 4) continue;
+
+                string type = part[0];
+                if(type == "Customer")
+                {
+                    string name = part[1];
+                    string password = part[2];
+                    string memberType = part[3];
+                    result.Add(new Customer(name,password,memberType)); 
+                }
+                if(type == "Member")
+                {
+                    string name = part[1];
+                    string password = part[2];
+                    string memberType = part[3];
+                    result.Add(new Member(name,password,memberType));
+                }
+            }
+            return result;
+        }
+
+        public static void SaveCustomerToTextFile(List<Customer> customer, string path)
+        {
+            const char sep = '|';
+            using var sw = new StreamWriter(path, append: false);
+
+            for (int i = 0;  i < customer.Count; i++)
+            {
+                var cClass = customer[i];
+
+                if (cClass is Customer c)
+                {
+                    sw.WriteLine($"Customer{sep}{c.Name}{sep}{c.Password}{sep}{c.MemberType}");
+                }
+                if(cClass is Member m)
+                {
+                    sw.WriteLine($"Member{sep}{m.Name}{sep}{m.Password}{sep}{m.MemberType}");
+                }
+
+
+            }
+        }
+        
+
         public static void ShowCaseInventory()
         {
             Console.WriteLine("=== MENU ====");
             foreach(Product product in Inventory)
             {
-                Console.WriteLine(product.ProductInfo(product.Currency)); //doublecheck
+                Console.WriteLine(product.ProductInfo(chosenCurrency)); //doublecheck
             }
         } 
 
+        //can do better, use a loop with index to scal products
         public static void SelectToCart(List<Product> cart)
         {
             int product = StoreMechanics.ValueCheckInt("" +
                 "\nWhat would you like? " +
                 "\n(1): Apple " +
                 "\n(2): Coca Cola" +
-                "\n(3): HotDog");
+                "\n(3): HotDog" +
+                "\n(4): exit");
 
             switch(product)
             {
@@ -48,11 +109,13 @@ namespace OnlineStore
                 case 3:
                     cart.Add(Inventory[2]);
                     break;
+                case 4:
+                    break;
             }
         }
 
 
-        public static void Changecurrency()
+        public static void ChangeCurrency()
         {
             int choice = ValueCheckInt("Would you like to change Currency to: \n(1): US \n(2): EUR \n(3): SEK");
             switch (choice)
@@ -76,7 +139,7 @@ namespace OnlineStore
             double totalSum = 0;
             foreach(Product product in cart)
             {
-                Console.WriteLine(product.ProductInfo(product.Currency));//doublecheck
+                Console.WriteLine(product.ProductInfo(chosenCurrency));//doublecheck || product.Currency
                 totalSum += Product.PriceInCurrency(chosenCurrency, product.Price);
                 totalItems++;
             }
@@ -94,13 +157,15 @@ namespace OnlineStore
 
         public static bool CheckedOut(double finalPrice)
         {
-            
-                Console.WriteLine($"Final price is: {finalPrice}");
+            string currencySymbol = Product.CurrencySymbol(StoreMechanics.chosenCurrency);
+
+
+            Console.WriteLine($"Final price is: {finalPrice} {currencySymbol}");
                 int choice = StoreMechanics.ValueCheckInt("(1): To check out and pay" +
                                                         "\n(2) to continue shopping");
                 if (choice == 1)
                 {
-                    Console.WriteLine($"Final price is: {finalPrice}");
+                    Console.WriteLine($"Final price is: {finalPrice} {currencySymbol}");
                     Console.WriteLine("Thank you for shopping");
                     return true;                    
                 }                            
