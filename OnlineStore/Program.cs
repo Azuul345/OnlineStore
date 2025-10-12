@@ -73,6 +73,7 @@ namespace OnlineStore
                     Console.WriteLine("Welcome, what would you like to do?");
                     Console.WriteLine("(1): Login");
                     Console.WriteLine("(2): Register");
+                    Console.WriteLine("(3): Exit program");
 
                     int choice = StoreMechanics.ValueCheckInt("Enter Number: ");
                     if (choice == 1)
@@ -88,6 +89,9 @@ namespace OnlineStore
                         c = Customer.RegisterCustumer(allCustomers);
                         logginIn = false;
                         StoreMechanics.SaveCustomerToTextFile(allCustomers, path);
+                        Console.WriteLine("DEBUG: Customer saved -> " + c.Name);
+                        Console.WriteLine("DEBUG: File path -> " + Path.GetFullPath("customer.txt"));
+                        Console.ReadKey();
 
                     }
                     else
