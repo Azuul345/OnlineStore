@@ -115,9 +115,9 @@ namespace OnlineStore
 
             }
             Customer c = new Customer(name,password,memberType);
-            return c;
             customer.Add(c);
             Console.WriteLine("Registration Complete");
+            return c;
 
         }
 
