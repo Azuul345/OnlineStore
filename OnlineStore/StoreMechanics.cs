@@ -9,15 +9,18 @@ using System.Xml.Linq;
 
 namespace OnlineStore
 {
-    internal class StoreMechanics
+    internal static class StoreMechanics
     {
-        public static Product.CurrencyValue chosenCurrency = Product.CurrencyValue.SEK;
+        public static CurrencyHandler.CurrencyValue chosenCurrency = CurrencyHandler.CurrencyValue.SEK;
 
         private static List<Product> Inventory = new List<Product>()
         {
-         new FruitAndVegetable(){ Name = "Apple", Price = 8, Type = "Fruit", Country = "Sweden", },
-         new Drink(){Name = "Coca Cola", Size="M", Price = 20, Type = "Drink", },
-         new Meal(){Name = "Hot Dog", Price = 15, MealType = "Snack" ,Type = "Food",}
+         new FruitAndVegetable("Apple", 8,"Fruit","Sweden"),
+         new FruitAndVegetable("Orange",9,"Fruit", "Spain"),
+         new Drink("Coca Cola",20,"Drink","33 cl"),
+         new Drink("Fanta", 20, "Drink","33 cl"),
+         new Meal("Hot Dog", 15, "Food", "Snack"),
+         new Meal("Frozen Pizza", 45,"Food", "Meal")
         };
 
 
@@ -79,39 +82,55 @@ namespace OnlineStore
         }
         
 
-        public static void ShowCaseInventory()
+        private static void ShowCaseInventory()
         {
+            
             Console.WriteLine("=== MENU ====");
             foreach(Product product in Inventory)
             {
-                Console.WriteLine(product.ProductInfo(chosenCurrency)); //doublecheck
+                Console.WriteLine(product.ProductInfo(chosenCurrency)); 
             }
-        } 
+            Console.WriteLine("");
+        }
 
-        //can do better, use a loop with index to scal products
+        //can do better by dividing into category and chose item depending on food, drinks, or fruits
         public static void SelectToCart(List<Product> cart)
         {
-            int product = StoreMechanics.ValueCheckInt("" +
-                "\nWhat would you like? " +
-                "\n(1): Apple " +
-                "\n(2): Coca Cola" +
-                "\n(3): HotDog" +
-                "\n(4): exit");
-
-            switch(product)
+            bool selectingItem = true;
+            while ( selectingItem)
             {
-                case 1:
-                    cart.Add(Inventory[0]);
-                    break;
-                case 2:
-                    cart.Add(Inventory[1]);
-                    break;
-                case 3:
-                    cart.Add(Inventory[2]);
-                    break;
-                case 4:
-                    break;
+                Console.Clear();
+                ShowCaseInventory();
+
+                for (int i = 0; i < Inventory.Count; i++)
+                {
+                    Console.WriteLine($"({i + 1}): {Inventory[i].Name}");
+                }
+                Console.WriteLine($"");
+
+                int product = ValueCheckInt("Select item or Press (0): to exit");
+                if (product == 0)
+                {
+                    Console.WriteLine("Exiting");
+                    selectingItem = false;
+                }
+                else
+                {
+                    int choice = product - 1;
+                    if (choice >= Inventory.Count)
+                    {
+                        Console.WriteLine("Unavailable item ");
+                        PressEnterToContinue();
+                    }
+                    else
+                    {
+                        cart.Add(Inventory[choice]);
+                        Console.WriteLine($"Added {Inventory[choice].Name} to cart");
+                        PressEnterToContinue();
+                    }
+                }
             }
+            
         }
 
 
@@ -121,13 +140,13 @@ namespace OnlineStore
             switch (choice)
             {
                 case 1:
-                    chosenCurrency = Product.CurrencyValue.USD;
+                    chosenCurrency = CurrencyHandler.CurrencyValue.USD;
                     break;
                 case 2:
-                    chosenCurrency = Product.CurrencyValue.EUR;
+                    chosenCurrency = CurrencyHandler.CurrencyValue.EUR;
                     break;
                 case 3:
-                    chosenCurrency = Product.CurrencyValue.SEK;
+                    chosenCurrency = CurrencyHandler.CurrencyValue.SEK;
                     break;
 
             }
@@ -137,13 +156,21 @@ namespace OnlineStore
         public static double  ShowcaseCart(List<Product> cart)
         {   int totalItems = 0;
             double totalSum = 0;
-            foreach(Product product in cart)
+            if (cart.Count == 0)
             {
-                Console.WriteLine(product.ProductInfo(chosenCurrency));//doublecheck || product.Currency
-                totalSum += Product.PriceInCurrency(chosenCurrency, product.Price);
-                totalItems++;
+                Console.WriteLine("No items in shopping cart yet");
             }
-            Console.WriteLine($"Total cost: {totalSum} {Product.CurrencySymbol(chosenCurrency)}. Total items: {totalItems}");
+            else
+            {
+                foreach (Product product in cart)
+                {
+               
+                    Console.WriteLine(product.ProductInfo(chosenCurrency));
+                    totalSum += CurrencyHandler.PriceInCurrency(chosenCurrency, product.Price);
+                    totalItems++;
+                }
+            }
+            Console.WriteLine($"Total cost: {Math.Round(totalSum,2)} {CurrencyHandler.CurrencySymbol(chosenCurrency)}. Total items: {totalItems}");
             return totalSum;
          
         }
@@ -157,15 +184,15 @@ namespace OnlineStore
 
         public static bool CheckedOut(double finalPrice)
         {
-            string currencySymbol = Product.CurrencySymbol(StoreMechanics.chosenCurrency);
+            string currencySymbol = CurrencyHandler.CurrencySymbol(StoreMechanics.chosenCurrency);
 
 
-            Console.WriteLine($"Final price is: {finalPrice} {currencySymbol}");
+            Console.WriteLine($"Final price is: {Math.Round(finalPrice, 2)} {currencySymbol}");
                 int choice = StoreMechanics.ValueCheckInt("(1): To check out and pay" +
                                                         "\n(2) to continue shopping");
                 if (choice == 1)
                 {
-                    Console.WriteLine($"Final price is: {finalPrice} {currencySymbol}");
+                    Console.WriteLine($"Paid {Math.Round(finalPrice, 2)} {currencySymbol}");
                     Console.WriteLine("Thank you for shopping");
                     return true;                    
                 }                            
@@ -179,9 +206,9 @@ namespace OnlineStore
             Console.ReadKey();
         }
 
-        public static double CheckForCorrectValue(string enterValue)
+        public static int ValueCheckInt(string enterValue)
         {
-            double result = 0;
+            int result = 0;
 
             while (true)
             {
@@ -193,7 +220,7 @@ namespace OnlineStore
                     result = int.Parse(value);
                     break;
                 }
-                catch 
+                catch
                 {
 
                     Console.WriteLine("Wrong input, enter a numeric value"); ;
@@ -201,12 +228,6 @@ namespace OnlineStore
 
             }
             return result;
-
-        }
-
-        public static int ValueCheckInt(string enterValue)
-        {
-            return (int)CheckForCorrectValue(enterValue);
         }
 
     }

@@ -18,9 +18,9 @@ namespace OnlineStore
         //};
 
 
-        private string _name;
-        private string _password;
-        private string _memberType;
+        //private string _name;
+        //private string _password;
+        //private string _memberType;
         private List<Product> _cart;
 
         public string Name { get; private set; }
@@ -29,7 +29,7 @@ namespace OnlineStore
 
         public List<Product> Cart { get; set; }
 
-        public Customer(string name = "nn" ,string password = "", string membertype = "") //
+        public Customer(string name = "nn" ,string password = "000", string membertype = "Regular") // 
         {
             Name = name;
             Password = password;
@@ -39,7 +39,7 @@ namespace OnlineStore
 
 
         
-        //FixLog in to read from text file
+        
         public static Customer LogIn(List<Customer> custumer)
         {
             
@@ -60,7 +60,7 @@ namespace OnlineStore
             }
             if (found == null)
             {
-                Console.WriteLine("Customer not found. \nPress (1) to register \nPress any button to contine");
+                Console.WriteLine("Customer not found. \nPress (1) to register \nPress any button to continue");
                 string input = Console.ReadLine();
                 if (input == "1")
                 {
@@ -125,17 +125,18 @@ namespace OnlineStore
         {
             foreach (Customer c in customer)
             {
-                Console.WriteLine($"{c.Name} Member type: {c.MemberType} " ); //Member type: {c.MemberType}
+                Console.WriteLine($"{c.Name} Member type: {c.MemberType} " ); 
                 foreach (Product p in c.Cart)
                 {
                     Console.WriteLine(p.ProductInfo(StoreMechanics.chosenCurrency));
                 }
             }
         }
-        //add currency later
+        
+
         public override string ToString()
         {
-            string currencySymbol = Product.CurrencySymbol(StoreMechanics.chosenCurrency);
+            string currencySymbol = CurrencyHandler.CurrencySymbol(StoreMechanics.chosenCurrency);
             string cartProduct = "";
             double total = 0;
             int count = 0;
@@ -143,15 +144,16 @@ namespace OnlineStore
             foreach(Product p in Cart)
             {
                 cartProduct += p.ProductInfo(StoreMechanics.chosenCurrency) + "\n";
-                total += Product.PriceInCurrency(StoreMechanics.chosenCurrency, p.Price); //p.Price
+                total += CurrencyHandler.PriceInCurrency(StoreMechanics.chosenCurrency, p.Price); 
                 count++;
             }
-            //string symbol = Product.CurrencySymbol(
+            
             return $"===Customer info===" +
                    $"\nName: {Name} Password: {Password} " +
+                   $"\nMember Level: {MemberType}" +
                    $"\nShopping Cart items:\n" +
                    cartProduct +
-                   $"Total cost: {total} {currencySymbol}. Total items {count}";
+                   $"Total cost: {Math.Round(total,2)} {currencySymbol}. Total items {count}";
            
         }
 

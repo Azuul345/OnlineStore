@@ -12,7 +12,8 @@ namespace OnlineStore
 
             // 2. Därefter ska ytterligare en meny visas där man ska kunna välja att handla, se kundvagn eller gå till kassan
             //CHECK
-            // 3. Om man väljer at thandla ska man få upp minst 3 olika produkter att köpa(t.ex.Korv,Dricka och Äpple).
+
+            // 3. Om man väljer att handla ska man få upp minst 3 olika produkter att köpa(t.ex.Korv,Dricka och Äpple).
             //   Man ska se pris för varje produkt och kunna lägga till vara i kundvagn.
             //CHECK
             // 4 Kundvagnen ska visa alla produkter man lagt i den,styck priset, antalet och total priset
@@ -42,9 +43,14 @@ namespace OnlineStore
             //Fix the currency converter to show properly in all menu options and when checking out. 
 
             //Add textfile to save customers. 
-            Console.OutputEncoding = Encoding.UTF8;
-            string path = "customer.txt";
             //List<Customer> allCustomers = new();
+
+
+
+            //Necessary to Showcase EURO SYMBOL
+            Console.OutputEncoding = Encoding.UTF8;
+
+            string path = "customer.txt";
             List<Customer> allCustomers = StoreMechanics.LoadCustomerFromTextFile(path);
 
             bool programRunning = true;
@@ -55,9 +61,9 @@ namespace OnlineStore
                 Customer c = new Customer();
                 while (logginIn)
                 {
-                
+                    Console.Clear();
                     Console.WriteLine("Welcome, what would you like to do?");
-                    Console.WriteLine("(1): Loggin");
+                    Console.WriteLine("(1): Login");
                     Console.WriteLine("(2): Register");
 
                     int choice = StoreMechanics.ValueCheckInt("Enter Number: ");
@@ -73,14 +79,12 @@ namespace OnlineStore
                     {
                         c = Customer.RegisterCustumer(allCustomers);
                         logginIn = false;
-                    //StoreMechanics.EnterShop(c);
 
                     }
                     else
                     {
                         Console.WriteLine("Try again");
                     }
-                //
                 }
                 
                 bool inStore = true;
@@ -93,17 +97,17 @@ namespace OnlineStore
                     "\n(1): Shop item " +
                     "\n(2): Show Shopping Cart Item Details " +
                     "\n(3): Check Out " +
-                    "\n(4): Empty shoppingcart" +
+                    "\n(4): Empty shopping cart" +
                     "\n(5): Logout" +
                     "\n(6): Showcase customer info"+
                     "\n(7): Change Currency- US, EUR, SEK"+
-                    "\n(8)Admin: see all cusomer info");
+                    "\n(8)Admin: see all customer info");
 
                     switch (storeChoice)
                     {
                         case 1:
 
-                            StoreMechanics.ShowCaseInventory();
+                            //StoreMechanics.ShowCaseInventory();
                             StoreMechanics.SelectToCart(c.Cart);
 
                             break;
@@ -118,7 +122,7 @@ namespace OnlineStore
                             {
                                 Member m = Member.ConvertToMember(c, c.Cart);
                                 double price = Member.GetFinalPrice(m.Cart, m.MemberType);
-                                double finalPrice = Product.PriceInCurrency(StoreMechanics.chosenCurrency, price);
+                                double finalPrice = CurrencyHandler.PriceInCurrency(StoreMechanics.chosenCurrency, price);
                                 paid = StoreMechanics.CheckedOut(price);
                                 if (paid)
                                 {
@@ -159,6 +163,9 @@ namespace OnlineStore
                             break;
                         case 8:
                             Customer.ListAllCustumers(allCustomers);
+                            break;
+                        default:
+                            Console.WriteLine("Invalid Choice");
                             break;
                     }
                     StoreMechanics.PressEnterToContinue();

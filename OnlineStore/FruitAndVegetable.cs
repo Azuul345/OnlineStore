@@ -9,13 +9,19 @@ namespace OnlineStore
     internal class FruitAndVegetable : Product
     {
 
-        public string Country;
+        public string Country {  get; private set; }
 
-        public override string ProductInfo(CurrencyValue c)
+        public FruitAndVegetable(string name, double price, string type, string country) : base(name, price, type)
         {
-            double price = PriceInCurrency(c, Price);
-            string sym = CurrencySymbol(c);
-            return $"{Name}. Price: {price} {sym} Type: {Type}";  //ProductID: {ProductID}
+            Country = country;
+        }
+
+
+        public override string ProductInfo(CurrencyHandler.CurrencyValue c)
+        {
+            double price = CurrencyHandler.PriceInCurrency(c, Price);
+            string sym = CurrencyHandler.CurrencySymbol(c);
+            return $"{Name}. Price: {price} {sym}. Origin: {Country} Type: {Type}";  //ProductID: {ProductID}
         }
     }
 }

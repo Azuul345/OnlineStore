@@ -9,13 +9,19 @@ namespace OnlineStore
 {
     internal class Meal : Product
     {
-        public string MealType;
+        public string MealType { get; private set; }
 
-        public override string ProductInfo(CurrencyValue c)
+        public Meal(string name, double price, string type, string mealType) : base(name, price, type)
         {
-            double price = PriceInCurrency(c, Price);
-            string sym = CurrencySymbol(c);
-            return $"{Name}. Price: {price} {sym} Type: {Type}";  //Product ID: {ProductID}
+            MealType = mealType;
         }
+
+        public override string ProductInfo(CurrencyHandler.CurrencyValue c)
+        {
+            double price = CurrencyHandler.PriceInCurrency(c, Price);
+            string sym = CurrencyHandler.CurrencySymbol(c);
+            return $"{Name}. Price: {price} {sym}. Meal-type: {MealType} Type: {Type}";  //Product ID: {ProductID}
+        }
+
     }
 }

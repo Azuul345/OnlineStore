@@ -6,17 +6,20 @@ using System.Threading.Tasks;
 
 namespace OnlineStore
 {
-    public class Drink : Product
+    internal class Drink : Product
     {
-        public string Size;
+        public string Size { get; private set; }
 
-        
-
-        public override string ProductInfo(CurrencyValue c)
+        public Drink(string name, double price, string type, string size) : base(name, price, type)
         {
-            double price = PriceInCurrency(c, Price);
-            string sym = CurrencySymbol(c);
-            return $"{Name}. Price: {price} {sym} Type: {Type} "; //Product ID: {ProductID}
+            Size = size;
+        }
+
+        public override string ProductInfo(CurrencyHandler.CurrencyValue c)
+        {
+            double price = CurrencyHandler.PriceInCurrency(c, Price);
+            string sym = CurrencyHandler.CurrencySymbol(c);
+            return $"{Name}. {Size} Price: {price} {sym} Type: {Type} "; 
         }
     }
 }
