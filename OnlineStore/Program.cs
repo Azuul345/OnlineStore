@@ -87,6 +87,7 @@ namespace OnlineStore
                     {
                         c = Customer.RegisterCustumer(allCustomers);
                         logginIn = false;
+                        StoreMechanics.SaveCustomerToTextFile(allCustomers, path);
 
                     }
                     else

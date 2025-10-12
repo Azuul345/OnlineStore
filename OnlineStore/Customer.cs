@@ -117,6 +117,7 @@ namespace OnlineStore
             Customer c = new Customer(name,password,memberType);
             customer.Add(c);
             Console.WriteLine("Registration Complete");
+            //StoreMechanics.SaveCustomerToTextFile(customer, dataPath);
             return c;
 
         }

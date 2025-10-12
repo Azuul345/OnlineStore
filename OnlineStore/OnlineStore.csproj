@@ -9,7 +9,7 @@
 
 <ItemGroup>
   <None Include="customer.txt">
-    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </None>
 </ItemGroup>
 

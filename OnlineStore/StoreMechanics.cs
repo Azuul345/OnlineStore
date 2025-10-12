@@ -62,7 +62,7 @@ namespace OnlineStore
         public static void SaveCustomerToTextFile(List<Customer> customer, string path)
         {
             const char sep = '|';
-            using var sw = new StreamWriter(path, append: false);
+            using var sw = new StreamWriter(path, append: false) ;
 
             for (int i = 0;  i < customer.Count; i++)
             {
