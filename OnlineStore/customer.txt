@@ -1,0 +1,5 @@
+Customer|Knatte|123|GOLD
+Customer|Fnatte|321|SILVER
+Customer|Tjatte|213|BRONZ
+Customer|Jego|123|Regular
+Customer|Luffy|123|BRONZ
