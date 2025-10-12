@@ -85,6 +85,8 @@ namespace OnlineStore
 
         public static Customer RegisterCustumer(List<Customer> customer)
         {
+            if (customer == null) customer = new List<Customer>(); // for safety
+
             string memberType;
 
             Console.Write("What is your name?: ");

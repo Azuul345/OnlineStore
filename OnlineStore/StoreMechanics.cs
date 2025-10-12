@@ -28,7 +28,7 @@ namespace OnlineStore
         {
             const char sep = '|';
             List<Customer> result = new();
-            if (!File.Exists(path)) return null;
+            if (!File.Exists(path)) return result; //change made from null to result
             using StreamReader sr = new StreamReader(path);
 
 

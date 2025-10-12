@@ -50,10 +50,18 @@ namespace OnlineStore
             //Necessary to Showcase EURO SYMBOL
             Console.OutputEncoding = Encoding.UTF8;
 
-            string path = "customer.txt";
-            List<Customer> allCustomers = StoreMechanics.LoadCustomerFromTextFile(path);
+            //string path = "customer.txt";
+            //List<Customer> allCustomers = StoreMechanics.LoadCustomerFromTextFile(path);
 
-            bool programRunning = true;
+            string path = Path.Combine(AppContext.BaseDirectory, "customer.txt");
+            List<Customer> allCustomers = StoreMechanics.LoadCustomerFromTextFile(path);
+            if (allCustomers == null)
+            {
+                allCustomers = new List<Customer>(); // legacy safety
+            }
+
+
+                bool programRunning = true;
             while (programRunning)
             {
                 
